@@ -1,0 +1,467 @@
+openapi: 3.1.0
+info:
+  title: VIPLEV Target
+  description: This is an API specification
+  version: 1.0.0
+
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Authors
+    description: Operations related to authors
+  - name: Books
+    description: Operations related to books
+  - name: Auth
+    description: Authentication and user management operations
+
+
+paths:
+  /v1/auth/login:
+    post:
+      summary: Login
+      operationId: login
+      tags:
+        - Auth
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDTO'
+      responses:
+        '200':
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginDTO'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /v1/authors:
+    get:
+      summary: List authors
+      operationId: listAuthors
+      tags:
+        - Authors
+      responses:
+        '200':
+          description: Authors retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthorDTO'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+    post:
+      summary: Create author
+      operationId: createAuthor
+      tags:
+        - Authors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorDTO'
+      responses:
+        '201':
+          description: Author created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorDTO'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '409':
+          $ref: '#/components/responses/409Conflict'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /v1/authors/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Author identifier
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get author by id
+      operationId: getAuthorById
+      tags:
+        - Authors
+      responses:
+        '200':
+          description: Author retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorDTO'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+    patch:
+      summary: Update author
+      operationId: updateAuthor
+      tags:
+        - Authors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorDTO'
+      responses:
+        '200':
+          description: Author updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorDTO'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+    delete:
+      summary: Delete author
+      operationId: deleteAuthor
+      tags:
+        - Authors
+      responses:
+        '204':
+          description: Author deleted successfully
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /v1/books:
+    get:
+      summary: List books
+      operationId: listBooks
+      tags:
+        - Books
+      responses:
+        '200':
+          description: Books retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookDTO'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+    post:
+      summary: Create book
+      operationId: createBook
+      tags:
+        - Books
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookDTO'
+      responses:
+        '201':
+          description: Book created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDTO'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '409':
+          $ref: '#/components/responses/409Conflict'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /v1/books/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Book identifier
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get book by id
+      operationId: getBookById
+      tags:
+        - Books
+      responses:
+        '200':
+          description: Book retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDTO'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+    patch:
+      summary: Update book
+      operationId: updateBook
+      tags:
+        - Books
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookDTO'
+      responses:
+        '200':
+          description: Book updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDTO'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+    delete:
+      summary: Delete book
+      operationId: deleteBook
+      tags:
+        - Books
+      responses:
+        '204':
+          description: Book deleted successfully
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    400BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+          examples:
+            invalidField:
+              summary: Invalid field
+              value:
+                type: /errors/bad-request
+                title: Bad Request
+                status: 400
+                detail: The field 'name' is required
+                instance: /v1/environments
+            invalidFormat:
+              summary: Invalid format
+              value:
+                type: /errors/bad-request
+                title: Bad Request
+                status: 400
+                detail: The field 'port' must be a number
+                instance: /v1/environments
+    401Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+          examples:
+            unauthorized:
+              summary: Missing or invalid token
+              value:
+                type: /errors/unauthorized
+                title: Unauthorized
+                status: 401
+                detail: Authentication token is missing or invalid
+                instance: /v1/environments
+    404NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+          examples:
+            notFound:
+              summary: Resource not found
+              value:
+                type: /errors/not-found
+                title: Not Found
+                status: 404
+                detail: Resource with id '123' not found
+                instance: /v1/environments/123
+    409Conflict:
+      description: Resource state conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+          examples:
+            conflict:
+              summary: Resource state conflict
+              value:
+                type: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409
+                title: Conflict - Resource state conflict
+                status: 409
+                detail: The requested action conflicts with the current state of the resource
+                instance: /v1/environments/123
+    500InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+          examples:
+            serverError:
+              summary: Server error
+              value:
+                type: /errors/internal-server-error
+                title: Internal Server Error
+                status: 500
+                detail: An unexpected error occurred while processing the request
+                instance: /v1/environments
+
+  schemas:
+
+    ErrorDTO:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI reference identifying the problem type
+          examples:
+            - /errors/bad-request
+        title:
+          type: string
+          description: A short, human-readable description of the problem type
+          examples:
+            - Bad Request
+        status:
+          type: integer
+          description: HTTP status code
+          examples:
+            - 400
+        detail:
+          type: string
+          description: A detailed explanation of the problem
+          examples:
+            - The field 'name' is required
+        instance:
+          type: string
+          format: uri
+          description: URI reference identifying the specific occurrence of the problem
+          examples:
+            - /v1/environments/123
+
+    LoginDTO:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        userId:
+          type: string
+          format: uuid
+          readOnly: true
+          examples:
+            - "5a56d1ef-3ff9-475d-84c8-33796245fa9f"
+        email:
+          type: string
+          examples:
+            - "user@viplev.dk"
+        password:
+          type: string
+          writeOnly: true
+          examples:
+            - "mySecretPassword"
+        token:
+          type: string
+          readOnly: true
+          examples:
+            - "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+
+    AuthorDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          examples:
+            - "4c6a0f8b-9e71-4ca7-b4fe-d30babf80f2b"
+        name:
+          type: string
+          examples:
+            - "George Orwell"
+
+    BookDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          examples:
+            - "f85c7ce7-685f-4e5d-8356-6d5358b97d88"
+        title:
+          type: string
+          examples:
+            - "1984"
+        isbn:
+          type: string
+          examples:
+            - "9780451524935"
+        description:
+          type: string
+          examples:
+            - "A dystopian novel set in a totalitarian society under constant surveillance."
+        publishedDate:
+          type: string
+          format: date
+          examples:
+            - "1949-06-08"
+        pageCount:
+          type: integer
+          format: int32
+          examples:
+            - 328
+        language:
+          type: string
+          examples:
+            - "en"
+        genre:
+          type: string
+          examples:
+            - "Dystopian"
+        price:
+          type: number
+          examples:
+            - 149.95
+        authorId:
+          type: string
+          format: uuid
+          examples:
+            - "4c6a0f8b-9e71-4ca7-b4fe-d30babf80f2b"
