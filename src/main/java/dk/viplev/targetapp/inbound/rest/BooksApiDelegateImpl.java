@@ -20,6 +20,7 @@ public class BooksApiDelegateImpl implements BooksApiDelegate {
 
     @Override
     public ResponseEntity<BooksDTO> listBooks(Integer page, Integer size) {
+        log.info("GET /v1/books - page={}, size={}", page, size);
         return ResponseEntity.ok(bookService.listBooks(
                 page != null ? page : 0,
                 size != null ? size : 10));
@@ -27,21 +28,25 @@ public class BooksApiDelegateImpl implements BooksApiDelegate {
 
     @Override
     public ResponseEntity<BookDTO> createBook(BookDTO bookDTO) {
+        log.info("POST /v1/books");
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(bookDTO));
     }
 
     @Override
     public ResponseEntity<BookDTO> getBookById(Long id) {
+        log.info("GET /v1/books/{}", id);
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
     @Override
     public ResponseEntity<BookDTO> updateBook(Long id, BookDTO bookDTO) {
+        log.info("PUT /v1/books/{}", id);
         return ResponseEntity.ok(bookService.updateBook(id, bookDTO));
     }
 
     @Override
     public ResponseEntity<Void> deleteBook(Long id) {
+        log.info("DELETE /v1/books/{}", id);
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
     }
