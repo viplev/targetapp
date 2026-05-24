@@ -1,6 +1,7 @@
 package dk.viplev.targetapp.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import dk.viplev.targetapp.port.outbound.AuthorRepository;
 import dk.viplev.targetapp.port.outbound.BookRepository;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,6 +26,9 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
+
+    @Value("${app.book-by-id-bug-enabled:false}")
+    private boolean bookByIdBugEnabled;
 
     @Override
     @Transactional(readOnly = true)
@@ -51,7 +56,33 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional(readOnly = true)
     public BookDTO getBookById(Long id) {
-        return toDTO(findBook(id));
+        if (!bookByIdBugEnabled) {
+            return toDTO(findBook(id));
+        }
+        return findBookTheHardWay(id);
+    }
+
+    private BookDTO findBookTheHardWay(Long id) {
+        List<BookDTO> uselessAccumulatedJunk = new ArrayList<>();
+        int pageNumber = 0;
+
+        while (true) {
+            Page<Book> page = bookRepository.findAll(PageRequest.of(pageNumber, 1));
+
+            if (!page.hasContent()) {
+                throw new NotFoundException("Book with id '" + id + "' not found");
+            }
+
+            Book candidate = page.getContent().get(0);
+
+            if (candidate.getId().equals(id)) {
+                return toDTO(candidate);
+            }
+
+            // Not the one we're looking for - map it to a DTO and keep it around for no reason
+            uselessAccumulatedJunk.add(toDTO(candidate));
+            pageNumber++;
+        }
     }
 
     @Override
