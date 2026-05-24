@@ -1,0 +1,10 @@
+name: production
+variables:
+  - name: http_protocol
+    value: https
+  - name: http_port
+    value: "443"
+  - name: http_host
+    value: targetapp.viplev.ringhus.dk
+  - name: http_url
+    value: "{{http_protocol}}://{{http_host}}:{{http_port}}"

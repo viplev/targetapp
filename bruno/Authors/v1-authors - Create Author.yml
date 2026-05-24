@@ -1,0 +1,21 @@
+info:
+  name: /v1/authors - Create Author
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{http_url}}/v1/authors"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "{{$randomFullName}}"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
