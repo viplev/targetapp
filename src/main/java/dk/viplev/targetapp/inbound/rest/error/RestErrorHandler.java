@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.net.URI;
 
@@ -93,6 +94,20 @@ public class RestErrorHandler {
 			.type(NOT_FOUND_TYPE_URI)
 			.title("Not Found - " + ex.getMessage())
 			.detail(ex.getDescription())
+			.instance(URI.create(request.getRequestURI()));
+
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(NoResourceFoundException.class)
+	public ResponseEntity<ErrorDTO> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
+		log.debug("HTTP 404 - No static resource: {}", ex.getMessage());
+
+		ErrorDTO error = new ErrorDTO()
+			.status(404)
+			.type(NOT_FOUND_TYPE_URI)
+			.title("Not Found")
+			.detail(ex.getMessage())
 			.instance(URI.create(request.getRequestURI()));
 
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
