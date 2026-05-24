@@ -1,15 +1,20 @@
 package dk.viplev.targetapp.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class openApiConfig {
+public class OpenApiConfig {
 
-    private final String appVersion = "1.0.0";
+    private final String appVersion;
+
+    public OpenApiConfig(@Value("${app.version}") String appVersion) {
+        this.appVersion = appVersion;
+    }
 
     @Bean
     public OpenAPI openAPI() {
