@@ -95,6 +95,18 @@ sourceSets {
 	}
 }
 
+// Replace @...@ placeholders in resource files with project properties
+processResources {
+	filesMatching('application.properties') {
+		filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: project.version])
+	}
+}
+
+processTestResources {
+	filesMatching('application.properties') {
+		filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: project.version])
+	}
+}
 
 // Make sure the code is generated before compiling
 compileJava.dependsOn tasks.openApiGenerate
