@@ -63,26 +63,18 @@ public class BookServiceImpl implements BookService {
     }
 
     private BookDTO findBookTheHardWay(Long id) {
+        List<Book> allBooks = bookRepository.findAllWithAuthors();
         List<BookDTO> uselessAccumulatedJunk = new ArrayList<>();
-        int pageNumber = 0;
 
-        while (true) {
-            Page<Book> page = bookRepository.findAll(PageRequest.of(pageNumber, 1));
-
-            if (!page.hasContent()) {
-                throw new NotFoundException("Book with id '" + id + "' not found");
-            }
-
-            Book candidate = page.getContent().get(0);
-
+        for (Book candidate : allBooks) {
             if (candidate.getId().equals(id)) {
                 return toDTO(candidate);
             }
-
             // Not the one we're looking for - map it to a DTO and keep it around for no reason
             uselessAccumulatedJunk.add(toDTO(candidate));
-            pageNumber++;
         }
+
+        throw new NotFoundException("Book with id '" + id + "' not found");
     }
 
     @Override
