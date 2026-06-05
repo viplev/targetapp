@@ -6,6 +6,15 @@ info:
 http:
   method: GET
   url: "{{http_url}}/v1/books"
+  params:
+    - name: page
+      value: "1"
+      type: query
+      disabled: true
+    - name: size
+      value: "2"
+      type: query
+      disabled: true
   auth: inherit
 
 settings:

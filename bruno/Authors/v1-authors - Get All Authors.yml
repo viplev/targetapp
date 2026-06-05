@@ -5,7 +5,14 @@ info:
 
 http:
   method: GET
-  url: "{{http_url}}/v1/authors"
+  url: "{{http_url}}/v1/authors?page=0&size=20"
+  params:
+    - name: page
+      value: "0"
+      type: query
+    - name: size
+      value: "20"
+      type: query
   auth: inherit
 
 settings:
