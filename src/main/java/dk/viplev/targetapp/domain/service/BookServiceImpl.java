@@ -1,6 +1,8 @@
 package dk.viplev.targetapp.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
@@ -63,18 +66,31 @@ public class BookServiceImpl implements BookService {
     }
 
     private BookDTO findBookTheHardWay(Long id) {
-        List<Book> allBooks = bookRepository.findAllWithAuthors();
         List<BookDTO> uselessAccumulatedJunk = new ArrayList<>();
+        int pageSize = 250;
+        int pageNumber = 0;
 
-        for (Book candidate : allBooks) {
-            if (candidate.getId().equals(id)) {
-                return toDTO(candidate);
+        while (true) {
+            Page<Book> page = bookRepository.findAll(PageRequest.of(pageNumber, pageSize));
+
+            if (!page.hasContent()) {
+                throw new NotFoundException("Book with id '" + id + "' not found");
             }
-            // Not the one we're looking for - map it to a DTO and keep it around for no reason
-            uselessAccumulatedJunk.add(toDTO(candidate));
-        }
 
-        throw new NotFoundException("Book with id '" + id + "' not found");
+            for (Book candidate : page.getContent()) {
+                	if (candidate.getId().equals(id)) {
+                		return toDTO(candidate);
+                	}
+                	// Not the one we're looking for - map it to a DTO and keep it around for no reason
+                	uselessAccumulatedJunk.add(toDTO(candidate));
+
+            }
+            for (BookDTO candidate : uselessAccumulatedJunk) {
+                log.info("Useless accumulated junk: " + candidate.getId() + " - " + candidate.getTitle());
+            }
+
+            pageNumber++;
+        }
     }
 
     @Override
