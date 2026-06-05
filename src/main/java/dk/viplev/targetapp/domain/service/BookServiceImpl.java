@@ -66,7 +66,7 @@ public class BookServiceImpl implements BookService {
     }
 
     private BookDTO findBookTheHardWay(Long id) {
-        List<BookDTO> uselessAccumulatedJunk = new ArrayList<>();
+        //List<BookDTO> uselessAccumulatedJunk = new ArrayList<>();
         int pageSize = 250;
         int pageNumber = 0;
 
@@ -82,12 +82,14 @@ public class BookServiceImpl implements BookService {
                 		return toDTO(candidate);
                 	}
                 	// Not the one we're looking for - map it to a DTO and keep it around for no reason
-                	uselessAccumulatedJunk.add(toDTO(candidate));
+                	//uselessAccumulatedJunk.add(toDTO(candidate));
 
             }
+            /*
             for (BookDTO candidate : uselessAccumulatedJunk) {
                 log.info("Useless accumulated junk: " + candidate.getId() + " - " + candidate.getTitle());
             }
+            */
 
             pageNumber++;
         }
