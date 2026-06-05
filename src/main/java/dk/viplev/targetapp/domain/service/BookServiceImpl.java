@@ -67,7 +67,7 @@ public class BookServiceImpl implements BookService {
 
     private BookDTO findBookTheHardWay(Long id) {
         //List<BookDTO> uselessAccumulatedJunk = new ArrayList<>();
-        int pageSize = 250;
+        int pageSize = 500;
         int pageNumber = 0;
 
         while (true) {
