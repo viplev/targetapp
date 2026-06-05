@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
 
 import dk.viplev.targetapp.adapter.inbound.rest.dto.BookDTO;
 import dk.viplev.targetapp.adapter.inbound.rest.dto.BooksDTO;
@@ -71,8 +72,9 @@ public class BookServiceImpl implements BookService {
         int pageNumber = 0;
 
         while (true) {
-            Page<Book> page = bookRepository.findAll(PageRequest.of(pageNumber, pageSize));
-
+            Page<Book> page = bookRepository.findAll(
+                PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id"))
+            );
             if (!page.hasContent()) {
                 throw new NotFoundException("Book with id '" + id + "' not found");
             }
