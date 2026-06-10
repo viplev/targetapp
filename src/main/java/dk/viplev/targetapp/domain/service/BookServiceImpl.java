@@ -85,7 +85,7 @@ public class BookServiceImpl implements BookService {
                 	}
                 	// Not the one we're looking for - map it to a DTO and keep it around for no reason
                 	uselessAccumulatedJunk.add(toDTO(candidate));
-                    log.info("Useless accumulated junk: " + candidate.getId() + " - " + candidate.getTitle());
+//                    log.info("Useless accumulated junk: " + candidate.getId() + " - " + candidate.getTitle());
 
             }
             /*
